@@ -14,8 +14,9 @@ script:
 - "./make_package.sh"
 deploy:
   provider: releases
+  skip_cleanup: true
   api_key:
     secure: Y20XjdBnYXTvdMw1ENET9C3jpu8hystZERSOoItXfDX7JqEOIx7bv2d5Jv2D+t9FpvQIwLFDGDBBk0D+r+W91wvObaFkiO3BwAtfdjLLE7oVl5/V2dfajGRXUVY4Is2fGiqGndqweZ1M77WTNFTYZu7HLP8mOchcXOm3UeMIQy6PEccssI17LRsiDuEvjo116/KYpEKSCFKjp7cDyB6RivWTKcyoEbQNgcel8Ph9pU5pnPz8/7llf0vsPeTkhk1yA0nM0gR1CYG630CQyEOoE9xGIsurFzvOIgS8FlgLn6n+G1R8ZdfZB1BEffScuLFx05IjGy8QqbCctt4etdH8V0dRomxymJ84HO6XwMlidlVzGemJy7db2A1oLUyaH6ZMgLymNoc7HjNjAKbn+yElEs+2UAs0JsoR/+DUaZutZWxaQPArydKogf5XquIsJiBvonJJFmkK2ceDviUcpuk59psgAEv1n0EQ/jSY0YDv155JGtJpFfcb713NpLm1pOW0rj4JLSyZYvU/Y3hR9/gWbiz08pzXWvqFcn1h4Py50fI7ltF9vRfk8Fe6l7sDIbeTKrKbEAhOR2zvMZfJh85c+cakOkYrQDDLxoTaSl5Tqz4t06ltCAptcqKMGe+E6/25ciHVaARPv1b8DIUypBDPmt7osl9ZZMxTVwqeAGFyDkw=
   file: grpc-unity-package.zip
   on:
-    repo: uarpalex/grpc-unity-package
+     tags: true
