@@ -11,7 +11,9 @@ It aims to be as vanilla as possible.
 
 ## What's supported?
 
-gRPC 1.13.0
+Google.Protobuf version="3.6.0" 
+Grpc.Core version="1.13.1"
+System.Interactive.Async version="3.1.1"
 
 * Windows / Linux / OSX are extracted straight from the official Nuget package
 * Android and iOS are built using Travis
