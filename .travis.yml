@@ -1,28 +1,21 @@
 os: osx
 osx_image: xcode9.4
 language: csharp
-
 install:
-  # CMake 3.7.2
-  - curl -O https://cmake.org/files/v3.7/cmake-3.7.2-Darwin-x86_64.dmg
-  - yes | hdiutil attach cmake-3.7.2-Darwin-x86_64.dmg
-  - export ANDROID_CMAKE_PATH=/Volumes/cmake-3.7.2-Darwin-x86_64/CMake.app/Contents/bin
-
-  # Android NDK
-  - curl -O https://dl.google.com/android/repository/android-ndk-r13b-darwin-x86_64.zip
-  - unzip -q android-ndk-r13b-darwin-x86_64.zip
-  - export ANDROID_NDK_PATH=$PWD/android-ndk-r13b
-
+- curl -O https://cmake.org/files/v3.7/cmake-3.7.2-Darwin-x86_64.dmg
+- yes | hdiutil attach cmake-3.7.2-Darwin-x86_64.dmg
+- export ANDROID_CMAKE_PATH=/Volumes/cmake-3.7.2-Darwin-x86_64/CMake.app/Contents/bin
+- curl -O https://dl.google.com/android/repository/android-ndk-r13b-darwin-x86_64.zip
+- unzip -q android-ndk-r13b-darwin-x86_64.zip
+- export ANDROID_NDK_PATH=$PWD/android-ndk-r13b
 script:
-  - ./build_android.sh
-  - ./build_ios.sh
-  - ./make_package.sh
-
+- "./build_android.sh"
+- "./build_ios.sh"
+- "./make_package.sh"
 deploy:
   provider: releases
-  skip_cleanup: true
   api_key:
-    secure: AAAAB3NzaC1yc2EAAAADAQABAAACAQDHYsJkCgUpm4OcIz4p3n/mffMbtARY5FUVyBEDJlmaY8+gaO4l+WMXGUJ36FPweyocNfiXy1rHKJ6dqcqsS1ntWnYEdMsdUUT8pzQNgW0ikeWv8Fzore9h7VEWxYo1tHIGdRxm+StaMduRY+43RUj3P0/oAY8tq95ud7bbpNssGgfN+BBHCuUP21dF/5GqTx1YdO1zh2hHT5IZOcw1gepk5Lei40EU5JPOasyzy4f9fzWEUtoslq4ix9D4E/PB8MZSgRCC9Wnvaksv1WoQUHyP9bwq3aT2HXDr6g1uvhmdl9nsMTMTCMHRgBVb/DmrhQ4Y2uB9wmJCKuB7u3H1ElRnU/BoVQjQzFNSXTVtauXFFSfokC7zCeO+/J8ufZ5d7u6jfeL0XagO1EAjh6PVpEVJYfN4cWymwOsjfkvWrWjMCSymUL89UnU4OkalHepgycUuY+D3F7r350lW0ufMr5RmidmijRdjUIec8L4aSgDcu0tFup637j2FbFs6KbrLkB+y08owTBmSml3LnF21RYR1IVvFrqz8yWMDlz86zCW6D8nhYjjy8n57eSPGiB4DTGiKqA2a89gcuVUzOg3TbMd4eNE3lpAu1Nu/JvrmjTMYcCWc1Y65GcXMTR8FqgKr3GDgh8HAwg3oL3GNw89WP7fT7h6g+2tVQIm1ieA3qRNZgQ==
+    secure: Y20XjdBnYXTvdMw1ENET9C3jpu8hystZERSOoItXfDX7JqEOIx7bv2d5Jv2D+t9FpvQIwLFDGDBBk0D+r+W91wvObaFkiO3BwAtfdjLLE7oVl5/V2dfajGRXUVY4Is2fGiqGndqweZ1M77WTNFTYZu7HLP8mOchcXOm3UeMIQy6PEccssI17LRsiDuEvjo116/KYpEKSCFKjp7cDyB6RivWTKcyoEbQNgcel8Ph9pU5pnPz8/7llf0vsPeTkhk1yA0nM0gR1CYG630CQyEOoE9xGIsurFzvOIgS8FlgLn6n+G1R8ZdfZB1BEffScuLFx05IjGy8QqbCctt4etdH8V0dRomxymJ84HO6XwMlidlVzGemJy7db2A1oLUyaH6ZMgLymNoc7HjNjAKbn+yElEs+2UAs0JsoR/+DUaZutZWxaQPArydKogf5XquIsJiBvonJJFmkK2ceDviUcpuk59psgAEv1n0EQ/jSY0YDv155JGtJpFfcb713NpLm1pOW0rj4JLSyZYvU/Y3hR9/gWbiz08pzXWvqFcn1h4Py50fI7ltF9vRfk8Fe6l7sDIbeTKrKbEAhOR2zvMZfJh85c+cakOkYrQDDLxoTaSl5Tqz4t06ltCAptcqKMGe+E6/25ciHVaARPv1b8DIUypBDPmt7osl9ZZMxTVwqeAGFyDkw=
   file: grpc-unity-package.zip
   on:
-    tags: true
+    repo: uarpalex/grpc-unity-package
