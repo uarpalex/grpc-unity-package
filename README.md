@@ -11,9 +11,10 @@ It aims to be as vanilla as possible.
 
 ## What's supported?
 
-Google.Protobuf version="3.6.0" 
-Grpc.Core version="1.13.1"
-System.Interactive.Async version="3.1.1"
+* Grpc.Core version="1.13.1"
+* Google.Protobuf version="3.6.0" 
+* System.Interactive.Async version="3.1.1"
+
 
 * Windows / Linux / OSX are extracted straight from the official Nuget package
 * Android and iOS are built using Travis
@@ -37,5 +38,6 @@ Tests and feedbacks are welcomed. Let's make Unity and gRPC work smoothly togeth
 * gRPC Team scripts: https://github.com/grpc/grpc/tree/master/src/csharp/experimental
 * Where it started: https://github.com/neuecc/MagicOnion
 * Where it continued: http://examinedself.com/cross-compile-grpc-unity/
+* And further http://chendi.me/2017/07/30/unity-grpc-plugin-en/
 
 ### Enjoy!
