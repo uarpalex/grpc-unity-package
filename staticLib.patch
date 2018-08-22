@@ -1,0 +1,105 @@
+diff --git a/src/csharp/Grpc.Core/Internal/DefaultSslRootsOverride.cs b/src/csharp/Grpc.Core/Internal/DefaultSslRootsOverride.cs
+index 02d2dcd1a2..71deb442c0 100644
+--- a/src/csharp/Grpc.Core/Internal/DefaultSslRootsOverride.cs
++++ b/src/csharp/Grpc.Core/Internal/DefaultSslRootsOverride.cs
+@@ -41,6 +41,7 @@ namespace Grpc.Core.Internal
+         {
+             lock (staticLock)
+             {
++                /*
+                 var stream = typeof(DefaultSslRootsOverride).GetTypeInfo().Assembly.GetManifestResourceStream(RootsPemResourceName);
+                 if (stream == null)
+                 {
+@@ -51,6 +52,7 @@ namespace Grpc.Core.Internal
+                     var pemRootCerts = streamReader.ReadToEnd();
+                     native.grpcsharp_override_default_ssl_roots(pemRootCerts);
+                 }
++                */
+             }
+         }
+     }
+diff --git a/src/csharp/Grpc.Core/Internal/NativeExtension.cs b/src/csharp/Grpc.Core/Internal/NativeExtension.cs
+index f526b913af..0a80622246 100644
+--- a/src/csharp/Grpc.Core/Internal/NativeExtension.cs
++++ b/src/csharp/Grpc.Core/Internal/NativeExtension.cs
+@@ -79,6 +79,10 @@ namespace Grpc.Core.Internal
+         /// </summary>
+         private static UnmanagedLibrary LoadUnmanagedLibrary()
+         {
++            #if UNITY_IOS
++                return null;
++            #endif
++
+             // TODO: allow customizing path to native extension (possibly through exposing a GrpcEnvironment property).
+             // See https://github.com/grpc/grpc/pull/7303 for one option.
+             var assemblyDirectory = Path.GetDirectoryName(GetAssemblyPath());
+@@ -88,6 +92,8 @@ namespace Grpc.Core.Internal
+             // With dotnet cli projects targeting net45 framework, the native libraries (just the required ones)
+             // are similarly copied to the built output folder, through the magic of Microsoft.NETCore.Platforms.
+             var classicPath = Path.Combine(assemblyDirectory, GetNativeLibraryFilename());
++       
++
+ 
+             // With dotnet cli project targeting netcoreapp1.0, projects will use Grpc.Core assembly directly in the location where it got restored
+             // by nuget. We locate the native libraries based on known structure of Grpc.Core nuget package.
+@@ -95,9 +101,13 @@ namespace Grpc.Core.Internal
+             string runtimesDirectory = string.Format("runtimes/{0}/native", GetPlatformString());
+             var netCorePublishedAppStylePath = Path.Combine(assemblyDirectory, runtimesDirectory, GetNativeLibraryFilename());
+             var netCoreAppStylePath = Path.Combine(assemblyDirectory, "../..", runtimesDirectory, GetNativeLibraryFilename());
++            var unityPath = Path.Combine(assemblyDirectory, "../../Assets/Plugins/Grpc.Core", runtimesDirectory, GetNativeLibraryFilename());
+ 
+             // Look for the native library in all possible locations in given order.
+-            string[] paths = new[] { classicPath, netCorePublishedAppStylePath, netCoreAppStylePath};
++            //string[] paths = new[] { classicPath, netCorePublishedAppStylePath, netCoreAppStylePath};
++
++            string[] paths = new[] { classicPath, netCorePublishedAppStylePath, netCoreAppStylePath, unityPath };
++            
+             return new UnmanagedLibrary(paths);
+         }
+ 
+diff --git a/src/csharp/Grpc.Core/Internal/NativeLogRedirector.cs b/src/csharp/Grpc.Core/Internal/NativeLogRedirector.cs
+index 30264acb10..712d50cac8 100644
+--- a/src/csharp/Grpc.Core/Internal/NativeLogRedirector.cs
++++ b/src/csharp/Grpc.Core/Internal/NativeLogRedirector.cs
+@@ -84,6 +84,11 @@ namespace Grpc.Core.Internal
+             catch (Exception e)
+             {
+                 Console.WriteLine("Caught exception in native callback " + e);
++                #if UNITY_METRO
++                           UnityEngine.Debug.Log("Caught exception in native callback " + e);
++                #else
++                           Console.WriteLine("Caught exception in native callback " + e);
++                #endif
+             }
+         }
+     }
+diff --git a/src/csharp/Grpc.Core/Internal/NativeMethods.Generated.cs b/src/csharp/Grpc.Core/Internal/NativeMethods.Generated.cs
+index 153a52f947..145a30c5d6 100644
+--- a/src/csharp/Grpc.Core/Internal/NativeMethods.Generated.cs
++++ b/src/csharp/Grpc.Core/Internal/NativeMethods.Generated.cs
+@@ -133,7 +133,7 @@ namespace Grpc.Core.Internal
+         #endregion
+ 
+         public NativeMethods(UnmanagedLibrary library)
+-        {
++        {
+             this.grpcsharp_init = GetMethodDelegate<Delegates.grpcsharp_init_delegate>(library);
+             this.grpcsharp_shutdown = GetMethodDelegate<Delegates.grpcsharp_shutdown_delegate>(library);
+             this.grpcsharp_version_string = GetMethodDelegate<Delegates.grpcsharp_version_string_delegate>(library);
+diff --git a/src/csharp/Grpc.Core/Internal/NativeMethods.cs b/src/csharp/Grpc.Core/Internal/NativeMethods.cs
+index 4e512442c8..ddb2339123 100644
+--- a/src/csharp/Grpc.Core/Internal/NativeMethods.cs
++++ b/src/csharp/Grpc.Core/Internal/NativeMethods.cs
+@@ -38,6 +38,13 @@ namespace Grpc.Core.Internal
+     /// </summary>
+     internal partial class NativeMethods
+     {
++        #if UNITY_EDITOR               
++                       private const string pluginName = "grpc_csharp_ext";            
++        #elif UNITY_IOS || UNITY_TVOS || UNITY_WEBGL           
++                       public const string pluginName = "__Internal";          
++        #else          
++                       public const string pluginName = "grpc_csharp_ext";             
++        #endif
+         // Signatures of native methods are generated from a template
+         // and can be found in NativeMethods.Generated.cs
